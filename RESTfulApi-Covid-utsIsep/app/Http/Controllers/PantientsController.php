@@ -46,6 +46,34 @@ class PantientsController extends Controller
     public function store(Request $request)
     {
 
+        $rules = array(
+            'name' => 'required',
+            'phone' => 'numeric|required',
+            'address' => 'required',
+            'status' => 'required',
+            'in_date_at' => 'required',
+            'out_date_at' => 'required',
+        );
+
+        $messages = array(
+            'name.required' => 'name tidak boleh kosong',
+            'phone.required' => 'phone tidak boleh kosong',
+            'phone.numeric' => 'phone harus berupa angka',
+            'address.required' => 'address tidak boleh kosong',
+            'status.required' => 'status tidak boleh kosong',
+            'in_date_at.required' => 'in_date_at tidak boleh kosong',
+            'out_date_at.required' => 'out_date_at tidak boleh kosong'
+
+        );
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()) {
+            $messages = $validator->getMessageBag();
+            return response()->json(["messages" => $messages], 500);
+        }
+
+
         $validatedData = $request->validate([
             'name' => 'required',
             'phone' => 'numeric|required',
